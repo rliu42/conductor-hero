@@ -1,0 +1,145 @@
+<html>
+	<head>
+		<title>Sphere Drawing</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="libraries/three.min.js"></script>
+		<script src="libraries/TrackballControls.js"></script>
+		<script src="libraries/stats.min.js"></script>
+		<script>
+			var scene = new THREE.Scene();
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			//lights!
+			var light = new THREE.PointLight( 0xffffff, 1, 100 );
+			light.position.set( 10, 0, 10 );
+			scene.add( light );
+
+			//camera!
+			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+			camera.position.z = 5;
+
+			//dragging thing (sorry, not action :P)
+			var controls = new THREE.TrackballControls( camera );
+
+			controls.rotateSpeed = 1.0;
+			controls.zoomSpeed = 1.2;
+			controls.panSpeed = 0.8;
+
+			controls.noZoom = false;
+			controls.noPan = false;
+
+			controls.staticMoving = true;
+			controls.dynamicDampingFactor = 0.3;
+
+			controls.keys = [ 65, 83, 68 ];
+
+			controls.addEventListener( 'change', render );
+
+			//diagnostic window
+			var stats = new Stats();
+			stats.domElement.style.position = 'absolute';
+			stats.domElement.style.top = '0px';
+			stats.domElement.style.zIndex = 100;
+			document.body.appendChild( stats.domElement );
+
+			//constants for sphere we will add
+			var numberOfSpheres = 0;
+			var posX = 0;
+			var posY = 0;
+			var posZ = 0;
+			var SPHERERADIUS = 0.1;
+			var GEOMETRY = new THREE.SphereGeometry( SPHERERADIUS );
+			var MATERIAL = new THREE.MeshPhongMaterial();
+
+			// I think this works like a timer? It ticks every so often.
+			// (because we are continuously adding spheres, we are simulating a very long stroke)
+			var render = function () {
+				requestAnimationFrame( render );
+
+				//console.log("Number of spheres: " + numberOfSpheres);
+				console.log(drawingMode);
+
+				renderer.render(scene, camera);
+				stats.update();
+			};
+
+			// so our mouse event works?
+			function animate() {
+				requestAnimationFrame( animate );
+				controls.update();
+			}
+
+			var sphere = new THREE.Mesh( GEOMETRY, MATERIAL );
+			sphere.position.set(posX,posY,posZ);
+			scene.add( sphere );
+
+			numberOfSpheres++;
+			posX+=(Math.random() - 0.5)*0.3;
+			posY+=(Math.random() - 0.5)*0.3;
+			posZ+=(Math.random() - 0.5)*0.3;
+
+			//our test to see whether we can detect clicks in the scene
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight;
+			var drawingMode = false;
+			//detect whether we are in drawing mode or not
+			function onDrawingKeyDown( e ) {
+				//console.log(String.fromCharCode(e.keyCode));
+				if (String.fromCharCode(e.keyCode) === 'Z') {
+					drawingMode = true;
+				}
+			}
+			document.addEventListener( 'keydown', onDrawingKeyDown, false );
+			function onDrawingKeyUp( e ) {
+				//console.log(String.fromCharCode(e.keyCode));
+				if (String.fromCharCode(e.keyCode) === 'Z') {
+					drawingMode = false;
+				}
+			}
+			document.addEventListener( 'keyup', onDrawingKeyUp, false );
+
+			//the actual drawing part
+			function onDocumentMouseDown( e ) {
+				if (drawingMode) {
+					e.preventDefault();
+					/*
+					var mouseVector = new THREE.Vector3();
+					mouseVector.x = 2 * (e.clientX / SCREEN_WIDTH) - 1;
+					mouseVector.y = 1 - 2 * ( e.clientY / SCREEN_HEIGHT );
+
+					console.log("Mouse clicked at set position (" + mouseVector.x + "," + mouseVector.y + "," + mouseVector.z + ")");
+					*/
+
+					//In order to draw with the mouse we have to do some syncing up with a RayCaster to find the 3d intersection point
+
+					var sphere = new THREE.Mesh( GEOMETRY, MATERIAL );
+					sphere.position.set((Math.random()-0.5)*3, (Math.random()-0.5)*3, (Math.random()-0.5)*3);
+					scene.add( sphere );
+
+					numberOfSpheres++;
+				}
+				/*
+				var raycaster = projector.pickingRay( mouseVector.clone(), camera );
+				var intersects = raycaster.intersectObject( TARGET );
+				for( var i = 0; i < intersects.length; i++ ) {
+				var intersection = intersects[ i ],
+				obj = intersection.object;
+				console.log("Intersected object", obj);
+				}
+				*/
+			}
+			document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+
+
+			animate();
+			render();
+		</script>
+	</body>
+</html>
