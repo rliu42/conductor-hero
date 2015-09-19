@@ -1,49 +1,49 @@
 // THIS CAN BE USED TO RUN THE RENDERER
 
 //set our globals
-var scene = new THREE.Scene();
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-camera.position.z = 5;
-
-//set our constants for sphere, etc. (globals)
-var numberOfSpheres = 0;
-var SPHERERADIUS = 0.1; //default? If we end up storing this here.
-var MATERIAL = new THREE.MeshPhongMaterial();
+var scene, renderer, camera, controls, stats, numberOfSpheres, SPHERERADIUS, MATERIAL;
 
 //call our functions
 init();
 animate();
 render();
 
-//initialize lights, the dragging camera thing, and the diagnostic window
+//initialize all our stuff with constants and such
 function init() {
+	//world
+	scene = new THREE.Scene();
+	renderer = new THREE.WebGLRenderer();
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	document.body.appendChild( renderer.domElement );
+
+	//set our constants for sphere, etc. (globals)
+	numberOfSpheres = 0;
+	SPHERERADIUS = 0.1; //default? If we end up storing this here.
+	MATERIAL = new THREE.MeshPhongMaterial();
+
 	//lights!
 	var light = new THREE.PointLight( 0xffffff, 1, 100 );
 	light.position.set( 10, 0, 10 );
 	scene.add( light );
 
-	//dragging thing
-	var controls = new THREE.TrackballControls( camera );
+	//camera!
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+	camera.position.z = 5;
 
+	//action! (actually, just the dragging thing)
+	controls = new THREE.TrackballControls( camera );
 	controls.rotateSpeed = 1.0;
 	controls.zoomSpeed = 1.2;
 	controls.panSpeed = 0.8;
-
 	controls.noZoom = false;
 	controls.noPan = false;
-
 	controls.staticMoving = true;
 	controls.dynamicDampingFactor = 0.3;
-
 	controls.keys = [ 65, 83, 68 ];
-
 	controls.addEventListener( 'change', render );
 
 	//diagnostic window
-	var stats = new Stats();
+	stats = new Stats();
 	stats.domElement.style.position = 'absolute';
 	stats.domElement.style.top = '0px';
 	stats.domElement.style.zIndex = 100;
