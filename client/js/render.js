@@ -3,11 +3,6 @@
 //set our globals
 var scene, renderer, camera, controls, stats, numberOfSpheres, SPHERERADIUS, MATERIAL;
 
-//call our functions
-init();
-animate();
-render();
-
 //initialize all our stuff with constants and such
 function init() {
 	//world
@@ -76,8 +71,12 @@ function addSphere(x,y,z,radius) {
 	var sphere = new THREE.Mesh( sphereGeometry, MATERIAL );
 	sphere.position.set(x,y,z);
 	scene.add( sphere );
-	/*
+	
 	// Do we need these here?
-	render();
-	*/
+	//render();
 }
+
+//call our functions
+init();
+animate();
+render();
