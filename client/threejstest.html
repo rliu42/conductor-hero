@@ -1,0 +1,92 @@
+<html>
+	<head>
+		<title>Sphere Drawing</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="lib/jquery-2.1.4.min.js"></script>
+		<script src="lib/three.min.js"></script>
+		<script src="lib/TrackballControls.js"></script>
+		<script src="lib/stats.min.js"></script>
+		<script>
+			var scene = new THREE.Scene();
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			//lights!
+			var light = new THREE.PointLight( 0xffffff, 1, 100 );
+			light.position.set( 10, 0, 10 );
+			scene.add( light );
+
+			//camera!
+			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+			camera.position.z = 5;
+
+			//dragging thing (sorry, not action :P)
+			var controls = new THREE.TrackballControls( camera );
+
+			controls.rotateSpeed = 1.0;
+			controls.zoomSpeed = 1.2;
+			controls.panSpeed = 0.8;
+
+			controls.noZoom = false;
+			controls.noPan = false;
+
+			controls.staticMoving = true;
+			controls.dynamicDampingFactor = 0.3;
+
+			controls.keys = [ 65, 83, 68 ];
+
+			controls.addEventListener( 'change', render );
+
+			//diagnostic window
+			var stats = new Stats();
+			stats.domElement.style.position = 'absolute';
+			stats.domElement.style.top = '0px';
+			stats.domElement.style.zIndex = 100;
+			document.body.appendChild( stats.domElement );
+
+			//constants for sphere we will add
+			var numberOfSpheres = 0;
+			var posX = 0;
+			var posY = 0;
+			var posZ = 0;
+			var SPHERERADIUS = 0.1;
+			var GEOMETRY = new THREE.SphereGeometry( SPHERERADIUS );
+			var MATERIAL = new THREE.MeshPhongMaterial();
+
+			// I think this works like a timer? It ticks every so often.
+			// (because we are continuously adding spheres, we are simulating a very long stroke)
+			var render = function () {
+				requestAnimationFrame( render );
+
+				var sphere = new THREE.Mesh( GEOMETRY, MATERIAL );
+				sphere.position.set(posX,posY,posZ);
+				scene.add( sphere );
+
+				numberOfSpheres++;
+				posX+=(Math.random() - 0.5)*0.3;
+				posY+=(Math.random() - 0.5)*0.3;
+				posZ+=(Math.random() - 0.5)*0.3;
+
+				console.log("Number of spheres: " + numberOfSpheres);
+
+				renderer.render(scene, camera);
+				stats.update();
+			};
+
+			// so our mouse event works?
+			function animate() {
+				requestAnimationFrame( animate );
+				controls.update();
+			}
+
+			animate();
+			render();
+		</script>
+	</body>
+</html>
