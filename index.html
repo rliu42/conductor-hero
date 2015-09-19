@@ -1,0 +1,21 @@
+<!DOCTYPE html
+<html>
+<head>
+<title>Conductor Hero</title>
+<script src="libraries/jquery-2.1.4.min.js"></script>
+<script src="libraries/leap-0.6.4.js"></script>
+<script src="public/js/leap-controller.js"></script>
+<script src="public/js/music.js"></script>
+</head>
+
+<body>
+  <audio id="beethoven" preload controls>
+    <source src="mp3/shakeitoff.mp3" type="audio/mpeg"/>
+  </audio>
+
+  <input id="speedSlider" type="range" min="500" max="2000" />
+
+  <p class="note">Current value: <span id="currentValue">0</span></p>
+
+</body>
+</html>
