@@ -21,6 +21,7 @@
 			var strokeSize = 0.1;
 			var TOTAL_NUM_SPHERES = 100;
 			
+			/*
 			//our test function
 			function addRandomSphere() {
 				addSphere(posX, posY, posZ, strokeSize); //this is how we do it!
@@ -53,17 +54,51 @@
 					strokeSize+=strokeVariation;
 				}
 			}
-			//setInterval(movePointer, 50); //moving our pointer around at 20 frames per second
+			setInterval(movePointer, 50); //moving our pointer around at 20 frames per second
+			*/
 			
+			//WATER MOLECULE DRAW
+			function variation(constant) {
+				return constant*(Math.random() - 0.5);
+			}
+			var BIG_STROKE = 0.3;
+			var BIG_BIG_STROKE = 0.5;
+			var LITTLE_STROKE = 0.15;
+			var strokeVar = 0.1;
+			strokeSize = BIG_STROKE;
+			addSphere(posX,posY,posZ,strokeSize+variation(0.1));
+			
+			strokeSize = LITTLE_STROKE;
+			var numSteps = 15;
+			for (i = 0; i < numSteps; i++) {
+				posX+=(1.4)/(numSteps+1)+variation(strokeVar);
+				posY+=(1.0)/(numSteps+1)+variation(strokeVar);
+				addSphere(posX, posY, posZ, strokeSize);
+			}
+			
+			posX+=(1.4)/(numSteps+1);
+			posY+=(1.0)/(numSteps+1);
+			strokeSize = BIG_BIG_STROKE;
+			addSphere(posX,posY,posZ,strokeSize);
+			
+			strokeSize = LITTLE_STROKE;
+			for (i=0; i < numSteps; i++) {
+				posX+=(1.4)/(numSteps+1)+variation(strokeVar);
+				posY-=(1.0)/(numSteps+1)+variation(strokeVar);
+				addSphere(posX,posY,posZ,strokeSize);
+			}
+			
+			posX+=(1.4)/(numSteps+1);
+			posY-=(1.0)/(numSteps+1);
+			strokeSize = BIG_STROKE;
+			addSphere(posX,posY,posZ,strokeSize+variation(0.1));
 			
 			//try exporting file
 			var saveSTLinProgress = false;
 			function saveStl() {
 				var stlString = "solid\n";
-				console.log(allSpheres);
 				for (i = 0; i < numberOfSpheres; i++) {
 					geometry = allSpheres[i];
-					console.log(geometry);
 					stlString += generateSTL( geometry );
 				}
 				stlString += "endsolid";
@@ -72,7 +107,6 @@
 			}
 			
 			function onSaveKeyDown(e) {
-				console.log(e.keyCode);
 				// yes, we are designating key Z to be the save key here
 				if (!saveSTLinProgress && String.fromCharCode(e.keyCode) === 'Z') {
 					console.log("Save called");
