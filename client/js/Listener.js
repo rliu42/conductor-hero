@@ -1,6 +1,7 @@
 // var connection = new WebSocket('ws://127.0.0.1:9999');
 var controller = new Leap.Controller();
 var currentRadius = 0.5;
+changeSphereSize(currentRadius);
 var defaultRadius = 0.18;
 var data = [];
 var endpoints = [];
