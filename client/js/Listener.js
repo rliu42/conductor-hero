@@ -4,19 +4,70 @@ var currentRadius;
 var defaultRadius = 0.18;
 var data = [];
 var endpoints = [];
-var drawRing = false;
 var isDrawing = false;
+var drawingRing = false;
 var drawingBeam = false;
+var drawingSphere = false;
 var drawing = new Drawing();
 var counter = 0;
 var threshold = 200;
 var pointers = 0;
 
-function getPointers(pointables) { 
+var CtrlDown = false;
+$(function() {
+    $(document).keyup(function(evt) {
+        if (evt.keyCode == 17) {
+            CtrlDown = false
+        }
+    }).keydown(function(evt) {
+        if (evt.keyCode == 17) {
+            CtrlDown = true
+        }
+        if (CtrlDown && evt.keyCode == 90) {
+            undo();
+        } else if (CtrlDown && evt.keCcode == 89) {
+            redo();
+        }
+    })
+})
+
+var saveSTLinProgress = false;
+
+function saveStl() {
+    var stlString = "solid\n";
+    console.log(allSpheres);
+    for (i = 0; i < allSpheres.length; i++) {
+        geometry = allSpheres[i];
+        console.log(geometry);
+        stlString += generateSTL(geometry);
+    }
+    stlString += "endsolid";
+    var blob = new Blob([stlString], {
+        type: 'text/plain'
+    });
+    saveAs(blob, 'mesh.stl');
+}
+
+function onSaveKeyDown(e) {
+    // yes, we are designating key Z to be the save key here
+    if (!saveSTLinProgress && String.fromCharCode(e.keyCode) === 'S') {
+        saveSTLinProgress = true; //lolol our primitive lock
+        saveStl();
+        saveSTLinProgess = false;
+    }
+    if (String.fromCharCode(e.keyCode) === 'R') {
+        //alert('Drawing Sphere');
+        isDrawing = true;
+        drawingSphere = true;
+    }
+}
+document.addEventListener("keydown", onSaveKeyDown, false);
+
+function getPointers(pointables) {
     count = 0
     for (var i in pointables) {
         if (!pointables[i].tool && pointables[i].direction[2] < -0.7) {
-            count+=1
+            count += 1
         }
     }
     return count;
@@ -30,7 +81,7 @@ controller.on('frame', function(frame) {
         } else {
             penOff();
         }
-        if (pointers >= 2) { 
+        if (pointers >= 2 && !drawingSphere) {
             drawingBeam = true;
         } else {
             drawingBeam = false;
@@ -47,8 +98,8 @@ controller.on('frame', function(frame) {
             var speed = pen.tipVelocity;
             var touchDistance = pen.touchDistance;
             var zone = pen.touchZone;
-            pointerOn(mapPosition(position), radius);
             if (isDrawing) {
+                pointerOn(mapPosition(position), radius);
                 if (data.length == 0) {
                     data.push({
                         radius: radius,
@@ -80,9 +131,12 @@ controller.on('frame', function(frame) {
                     }
                 }
             } else {
+                penOff();
                 pointerOff(mapPosition(position), radius);
             }
         }
+    } else {
+        penOff();
     }
 });
 
@@ -90,21 +144,9 @@ controller.on("gesture", function(gesture) {
     switch (gesture.type) {
         case "circle":
             if (gesture.state == 'stop' && isDrawing && !drawingBeam) {
-                drawing.drawRing(gesture.center, gesture.radius / 30, currentRadius || defaultRadius)
-                console.log("Circle Gesture");
+                //drawing.drawRing(gesture.center, gesture.radius / 30, currentRadius || defaultRadius)
+                //console.log("Circle Gesture");
             }
-            break;
-        case "keyTap":
-            console.log("Key Tap Gesture");
-            break;
-        case "screenTap":
-            /*if (gesture.state == 'stop' && !drawingBeam) {
-                drawing.drawSphere({position: gesture.position, radius: currentRadius || defaultRadius})
-            }*/
-            console.log("Screen Tap Gesture");
-            break;
-        case "swipe":
-            console.log("Swipe Gesture");
             break;
     }
 });
@@ -126,10 +168,15 @@ const max_radius = 0.75;
 } */
 
 var penOff = function() {
-    if (drawingBeam && endpoints.length >= 2) {
+    if (endpoints.length >= 2) {
         drawing.drawBeam(endpoints[0], infer(endpoints[endpoints.length - 1], drawing.endpoints), currentRadius);
     }
+    if (drawingSphere && endpoints.length >= 1) {
+        console.log("Drawing sphere")
+        drawing.drawSphere({position: infer(endpoints[endpoints.length - 1], drawing.endpoints), radius: currentRadius*2});
+    }
     endpoints = [];
+    drawingSphere = false;
     drawingBeam = false;
     isDrawing = false;
 }
@@ -149,5 +196,3 @@ var beamOff = function() {
     endpoints = []
     drawingBeam = false;
 }
-
-// setTimeout(updatePen, 300)

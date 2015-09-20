@@ -1,5 +1,5 @@
 function distance(p0, p1) {
-    return Math.sqrt(Math.pow(p0[0] - p1[0], 2) + Math.pow(p0[1] - p1[1], 2) + Math.pow(p0[2] - p1[2], 2))
+    return Math.sqrt(Math.pow(p0[0] - p1[0], 2) + Math.pow(p0[1] - p1[1], 2) + 2*Math.pow(p0[2] - p1[2], 2))
 }
 
 function sum(p1, p2) {
@@ -15,7 +15,7 @@ function mult(p, scalar) {
 }
 
 function infer(p, points) {
-	var threshold = 40;
+	var threshold = 50;
 	for (i in points) {
 		if (distance(points[i], p) > 1 && distance(points[i], p) < threshold) {
 			return points[i]

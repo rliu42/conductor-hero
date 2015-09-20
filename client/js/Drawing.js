@@ -27,9 +27,9 @@ Drawing.prototype.moveBeam = function(center, radius) {
 }
 
 Drawing.prototype.drawBeam = function(start, end, radius) {
-    //addSphere(start);
-    //addSphere(end);
-    this.endpoints.push(end)
+    addSphere({position: start.position, radius: 1.5});
+    addSphere({position: end.position, radius: 1.5});
+    this.endpoints.push(end.position)
     drawBeam();
 }
 

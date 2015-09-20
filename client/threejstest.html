@@ -22,30 +22,54 @@
 			var posY = 1;
 			var posZ = 1;
 			var strokeSize = 0.1;
+<<<<<<< HEAD
 			var TOTAL_NUM_SPHERES = 100;
 			
 <<<<<<< HEAD
 =======
 			/*
+=======
+			var TOTAL_NUM_SPHERES = 5;
+
+>>>>>>> 08592ef43ee7b24e7ef9a7ff5a6a91e0f0e45f3b
 			//our test function
 			function addRandomSphere() {
 				addSphere(posX, posY, posZ, strokeSize); //this is how we do it!
 				//randomly generate next sphere's parameters
-				posX+=(Math.random()-0.5)*0.3;
-				posY+=(Math.random()-0.5)*0.3;
-				posZ+=(Math.random()-0.5)*0.3;
+				posX+=(Math.random()-5.5)*0.3;
+				posY+=(Math.random()-5.5)*0.3;
+				posZ+=(Math.random()-5.5)*0.3;
 				var strokeVariation = (Math.random()-0.5)*0.1;
 				if (strokeSize + strokeVariation > 0) {
 					strokeSize+=strokeVariation;
 				}
-				numberOfSpheres++;
+				//numberOfSpheres++;
 			}
 			
-			while (numberOfSpheres < TOTAL_NUM_SPHERES) {
+/*			while (numberOfSpheres < TOTAL_NUM_SPHERES) {
 				addRandomSphere();
 			}
-			
-			function movePointer() {
+
+			var undos = numberOfSpheres;
+			while (undos > 0) {
+				console.log("Undoing!");
+				undo();
+				undos--;
+			}
+			console.log("Testing redo!");
+			redo();
+			console.log("Testing invalid undo!");
+			undo();
+			undo();
+			while (undos < TOTAL_NUM_SPHERES) {
+				console.log("Redoing!");
+				redo();
+				undos++;
+			}
+			console.log("Testing invalid redo!");
+			redo();
+
+/*			function movePointer() {
 				//CALL THESE FUNCTIONS
 				changeSphereSize(strokeSize);
 				movePointerSphere(posX,posY,posZ);
@@ -59,8 +83,8 @@
 					strokeSize+=strokeVariation;
 				}
 			}
-			setInterval(movePointer, 50); //moving our pointer around at 20 frames per second
-			*/
+			setInterval(movePointer, 100); //moving our pointer around at 20 frames per second*/
+			
 			
 			/*
 			//WATER MOLECULE DRAW
@@ -100,6 +124,17 @@
 			addSphere(posX,posY,posZ,strokeSize+variation(0.1));
 			*/
 			
+/*			for (i = 0; i < 5; i++) {
+				startBeam([posX, posY, posZ]);
+				posX = (Math.random() - 0.5)*5;
+				posY = (Math.random() - 0.5)*5;
+				posZ = (Math.random() - 0.5)*5;	
+				moveBeam([posX, posY, posZ]);
+				drawBeam();
+			}
+			
+			undo();*/
+			
 			var iterator = 0;
 			function iterateBeamDraw() {
 				if (iterator % 10 == 0) {
@@ -107,6 +142,14 @@
 					addSphere(posX, posY, posZ, SPHERERADIUS);
 					drawBeam(); //will error out at iterator == 0 but then initialize and keep going
 					startBeam([posX, posY, posZ]);
+				}
+				else if (iterator %5 == 1) {
+					console.log("undo!");
+					undo();
+				}
+				else if (iterator % 10 == 6) {
+					console.log("redo!");
+					redo();
 				}
 				else {
 					posX = (Math.random() - 0.5)*5;
@@ -117,12 +160,12 @@
 				}
 				iterator++;
 			}
-			setInterval(iterateBeamDraw, 50);
-			/*
-			for (i=0; i<20; i++) {
+			//setInterval(iterateBeamDraw, 50);
+			
+			for (i=0; i<501; i++) {
 				iterateBeamDraw();
 			}
-			*/
+			
 			
 			/*
 			addSphere(0,0,0,SPHERERADIUS);
@@ -137,8 +180,10 @@
 			var saveSTLinProgress = false;
 			function saveStl() {
 				var stlString = "solid\n";
-				for (i = 0; i < numberOfSpheres; i++) {
+				console.log(allSpheres);
+				for (i = 0; i < allSpheres.length; i++) {
 					geometry = allSpheres[i];
+					console.log(geometry);
 					stlString += generateSTL( geometry );
 				}
 				stlString += "endsolid";
