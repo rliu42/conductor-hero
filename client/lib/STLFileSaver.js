@@ -40,6 +40,7 @@ function generateSTL(geometry){
   return stl
 }
 
+/*
 // Use FileSaver.js 'saveAs' function to save the string
 function saveSTL( geometry, name ){  
   var stlString = generateSTL( geometry );
@@ -49,3 +50,4 @@ function saveSTL( geometry, name ){
   saveAs(blob, name + '.stl');
   
 }
+*/

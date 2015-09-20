@@ -24,10 +24,105 @@
 			var strokeSize = 0.1;
 			var TOTAL_NUM_SPHERES = 100;
 			
+<<<<<<< HEAD
+=======
+			/*
+			//our test function
+			function addRandomSphere() {
+				addSphere(posX, posY, posZ, strokeSize); //this is how we do it!
+				//randomly generate next sphere's parameters
+				posX+=(Math.random()-0.5)*0.3;
+				posY+=(Math.random()-0.5)*0.3;
+				posZ+=(Math.random()-0.5)*0.3;
+				var strokeVariation = (Math.random()-0.5)*0.1;
+				if (strokeSize + strokeVariation > 0) {
+					strokeSize+=strokeVariation;
+				}
+				numberOfSpheres++;
+			}
+			
+			while (numberOfSpheres < TOTAL_NUM_SPHERES) {
+				addRandomSphere();
+			}
+			
+			function movePointer() {
+				//CALL THESE FUNCTIONS
+				changeSphereSize(strokeSize);
+				movePointerSphere(posX,posY,posZ);
+				
+				//and this is how we update these values to be interesting
+				posX+=(Math.random()-0.5)*0.3;
+				posY+=(Math.random()-0.5)*0.3;
+				posZ+=(Math.random()-0.5)*0.3;
+				var strokeVariation = (Math.random()-0.5)*0.05;
+				if (strokeSize + strokeVariation > 0) {
+					strokeSize+=strokeVariation;
+				}
+			}
+			setInterval(movePointer, 50); //moving our pointer around at 20 frames per second
+			*/
+			
+			//WATER MOLECULE DRAW
+			function variation(constant) {
+				return constant*(Math.random() - 0.5);
+			}
+			var BIG_STROKE = 0.3;
+			var BIG_BIG_STROKE = 0.5;
+			var LITTLE_STROKE = 0.15;
+			var strokeVar = 0.1;
+			strokeSize = BIG_STROKE;
+			addSphere(posX,posY,posZ,strokeSize+variation(0.1));
+			
+			strokeSize = LITTLE_STROKE;
+			var numSteps = 15;
+			for (i = 0; i < numSteps; i++) {
+				posX+=(1.4)/(numSteps+1)+variation(strokeVar);
+				posY+=(1.0)/(numSteps+1)+variation(strokeVar);
+				addSphere(posX, posY, posZ, strokeSize);
+			}
+			
+			posX+=(1.4)/(numSteps+1);
+			posY+=(1.0)/(numSteps+1);
+			strokeSize = BIG_BIG_STROKE;
+			addSphere(posX,posY,posZ,strokeSize);
+			
+			strokeSize = LITTLE_STROKE;
+			for (i=0; i < numSteps; i++) {
+				posX+=(1.4)/(numSteps+1)+variation(strokeVar);
+				posY-=(1.0)/(numSteps+1)+variation(strokeVar);
+				addSphere(posX,posY,posZ,strokeSize);
+			}
+			
+			posX+=(1.4)/(numSteps+1);
+			posY-=(1.0)/(numSteps+1);
+			strokeSize = BIG_STROKE;
+			addSphere(posX,posY,posZ,strokeSize+variation(0.1));
+			
+>>>>>>> 38dee4447afe7d5c91717abf4c94731806f2c4a2
 			//try exporting file
-			stlString += "endsolid";
-			var blob = new Blob([stlString], {type: 'text/plain'});
-			saveAs(blob, 'mesh.stl');
+			var saveSTLinProgress = false;
+			function saveStl() {
+				var stlString = "solid\n";
+				for (i = 0; i < numberOfSpheres; i++) {
+					geometry = allSpheres[i];
+					stlString += generateSTL( geometry );
+				}
+				stlString += "endsolid";
+				var blob = new Blob([stlString], {type: 'text/plain'});
+				saveAs(blob, 'mesh.stl');
+			}
+			
+			function onSaveKeyDown(e) {
+				// yes, we are designating key Z to be the save key here
+				if (!saveSTLinProgress && String.fromCharCode(e.keyCode) === 'Z') {
+					console.log("Save called");
+					saveSTLinProgress = true; //lolol our primitive lock
+					saveStl();
+					saveSTLinProgess = false;
+				}
+			}
+			
+			document.addEventListener("keydown", onSaveKeyDown, false);
 		</script>
 	</body>
 </html>
