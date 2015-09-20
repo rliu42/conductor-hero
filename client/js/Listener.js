@@ -1,6 +1,6 @@
 // var connection = new WebSocket('ws://127.0.0.1:9999');
 var controller = new Leap.Controller();
-var currentRadius;
+var currentRadius = 0.5;
 var defaultRadius = 0.18;
 var data = [];
 var endpoints = [];
@@ -56,9 +56,18 @@ function onSaveKeyDown(e) {
         saveSTLinProgess = false;
     }
     if (String.fromCharCode(e.keyCode) === 'R') {
-        //alert('Drawing Sphere');
-        isDrawing = true;
-        drawingSphere = true;
+        //alert('Drawing Sphere')
+        if (drawingSphere) {
+            isDrawing = false;
+            drawingSphere = false;
+            drawingBeam = true;
+        }
+        else {
+            isDrawing = true;
+            drawingSphere = true;
+            drawingBeam = false;
+            console.log("R hit! " + isDrawing + " " + drawingSphere);
+        }
     }
 }
 document.addEventListener("keydown", onSaveKeyDown, false);
@@ -73,12 +82,29 @@ function getPointers(pointables) {
     return count;
 }
 
+function existsTool(pointables) {
+    for (var i in pointables) {
+        if (pointables[i].tool) {
+            return pointables[i];
+        }
+    }
+
+    return null;
+}
+
 controller.on('frame', function(frame) {
     if (frame.pointables.length > 0) {
         if (frame.pointables.length > 1) {
             penOn();
+            tool = existsTool(frame.pointables);
             pointers = getPointers(frame.pointables);
+            if (drawingSphere && endpoints.length > 1 && tool) {
+                console.log("Drawing sphere");
+                console.log(tool);
+                drawing.drawSphere({position: tool.stabilizedTipPosition, radius: currentRadius*2});
+            }
         } else {
+            console.log(drawingSphere);
             penOff();
         }
         if (pointers >= 2 && !drawingSphere) {
@@ -168,7 +194,7 @@ const max_radius = 0.75;
 } */
 
 var penOff = function() {
-    if (endpoints.length >= 2) {
+    if (!drawingSphere && endpoints.length >= 2) {
         drawing.drawBeam(endpoints[0], infer(endpoints[endpoints.length - 1], drawing.endpoints), currentRadius);
     }
     if (drawingSphere && endpoints.length >= 1) {
@@ -176,7 +202,6 @@ var penOff = function() {
         drawing.drawSphere({position: infer(endpoints[endpoints.length - 1], drawing.endpoints), radius: currentRadius*2});
     }
     endpoints = [];
-    drawingSphere = false;
     drawingBeam = false;
     isDrawing = false;
 }

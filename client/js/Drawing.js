@@ -4,6 +4,7 @@ var Drawing = function() {
 }
 
 Drawing.prototype.drawSphere = function(sphere) {
+    console.log(sphere);
     this.objects.push(sphere);
     addSphere(mapPosition(sphere.position), sphere.radius);
 }
