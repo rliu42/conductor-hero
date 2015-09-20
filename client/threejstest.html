@@ -22,16 +22,11 @@
 			var posY = 1;
 			var posZ = 1;
 			var strokeSize = 0.1;
-<<<<<<< HEAD
 			var TOTAL_NUM_SPHERES = 100;
 			
-<<<<<<< HEAD
-=======
 			/*
-=======
 			var TOTAL_NUM_SPHERES = 5;
 
->>>>>>> 08592ef43ee7b24e7ef9a7ff5a6a91e0f0e45f3b
 			//our test function
 			function addRandomSphere() {
 				addSphere(posX, posY, posZ, strokeSize); //this is how we do it!
@@ -144,12 +139,12 @@
 					startBeam([posX, posY, posZ]);
 				}
 				else if (iterator %5 == 1) {
-					console.log("undo!");
-					undo();
+					//console.log("undo!");
+					//undo();
 				}
 				else if (iterator % 10 == 6) {
-					console.log("redo!");
-					redo();
+					//console.log("redo!");
+					//redo();
 				}
 				else {
 					posX = (Math.random() - 0.5)*5;
@@ -162,9 +157,16 @@
 			}
 			//setInterval(iterateBeamDraw, 50);
 			
+			/*
 			for (i=0; i<501; i++) {
 				iterateBeamDraw();
 			}
+			*/
+			
+			startBeam([0,0,0]);
+			moveBeam([1,1,1]);
+			drawBeam();
+			
 			
 			
 			/*
@@ -175,7 +177,6 @@
 			drawBeam();
 			*/
 			
->>>>>>> 38dee4447afe7d5c91717abf4c94731806f2c4a2
 			//try exporting file
 			var saveSTLinProgress = false;
 			function saveStl() {
