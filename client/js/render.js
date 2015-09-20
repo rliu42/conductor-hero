@@ -113,12 +113,12 @@ function startBeam(position) {
 	
 	currentBeamStart = new THREE.Vector3(position[0], position[1], position[2]);
 	var currentBeamGeometry = new THREE.CylinderGeometry(SPHERERADIUS, SPHERERADIUS, 0.01);
-	//currentBeamGeometry.translate(currentBeamStart.x, currentBeamStart.y, currentBeamStart.z);
+	currentBeamGeometry.translate(currentBeamStart.x, currentBeamStart.y, currentBeamStart.z);
 	currentBeam = new THREE.Mesh( currentBeamGeometry, POINTER_MATERIAL );
 	//for some reason the following line doesn't work when the documentation says it should...
 	//currentBeam.position = currentBeamStart;
 	//so we use this instead...
-	currentBeam.position.set(currentBeamStart.x, currentBeamStart.y, currentBeamStart.z);
+	//currentBeam.position.set(currentBeamStart.x, currentBeamStart.y, currentBeamStart.z);
 	scene.add( currentBeam );
 	console.log("Started current beam at (" + currentBeam.position.x + "," + currentBeam.position.y + "," + currentBeam.position.z + ")");
 }
@@ -132,9 +132,14 @@ function moveBeam(position) {
     	//var arrow = new THREE.ArrowHelper( direction, currentBeamStart );
 		console.log("Direction: " + direction.length());
 		var currentBeamGeometry = new THREE.CylinderGeometry(SPHERERADIUS, SPHERERADIUS, direction.length());
+		currentBeam.matrixAutoUpdate = true;
 		currentBeamGeometry.rotateX( Math.PI / 2 ) //I don't know why this works!!!!! (I think lookat fixes a lateral side?)
+		//center is halfway there between start and end
+		var centerVector = new THREE.Vector3().addVectors( currentBeamStart, direction.multiplyScalar(0.5) );
+		//currentBeamGeometry.applyMatrix( new THREE.Matrix4().makeTranslation(centerVector.x, centerVector.y, centerVector.z));
 		scene.remove(currentBeam);
 		currentBeam = new THREE.Mesh( currentBeamGeometry, POINTER_MATERIAL );
+		currentBeam.position.set(centerVector.x, centerVector.y, centerVector.z);
 		//currentBeam.rotation.set(arrow.rotation.x, arrow.rotation.y, arrow.rotation.z);
 		/*
 		console.log(arrow.rotation);
@@ -144,9 +149,6 @@ function moveBeam(position) {
 		console.log(currentBeam.rotation.z);
 		*/
 		//scene.add(currentBeam);
-		//center is halfway there between start and end
-		var centerVector = new THREE.Vector3().addVectors( currentBeamStart, direction.multiplyScalar(0.5) );
-		currentBeam.position.set(centerVector.x, centerVector.y, centerVector.z);
 		
 		currentBeam.lookAt(currentBeamEnd);
 		scene.add( currentBeam );
@@ -161,8 +163,13 @@ function moveBeam(position) {
 function drawBeam() {
 	if (currentBeam != null) {
 		currentBeam.material = MATERIAL;
-		allSpheres.push(currentBeam);
-		//scene.add(currentBeam);
+		var geometry = currentBeam.geometry.clone();
+		// gotta follow exact steps taken in the source code for lookAt()
+		geometry.rotateX(Math.PI / 2);
+		geometry.applyMatrix(new THREE.Matrix4().makeRotationFromQuaternion(currentBeam.quaternion));
+		geometry.translate(currentBeam.position.x, currentBeam.position.y, currentBeam.position.z);
+		
+		allSpheres.push(geometry);
 		numberOfSpheres++;
 		currentBeam = null;
 	}
