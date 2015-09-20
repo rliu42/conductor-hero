@@ -10,6 +10,8 @@
 		<script src="lib/three.min.js"></script>
 		<script src="lib/TrackballControls.js"></script>
 		<script src="lib/stats.min.js"></script>
+		<script src="lib/FileSaver.min.js"></script>
+		<script src="lib/STLFileSaver.js"></script>
 		<script src="js/render.js"></script> <!-- moved evironment initialization -->
 		<script>
 			//initial values
@@ -17,6 +19,7 @@
 			var posY = 0;
 			var posZ = 0;
 			var strokeSize = 0.1;
+			var TOTAL_NUM_SPHERES = 100;
 			
 			//our test function
 			function addRandomSphere() {
@@ -32,7 +35,14 @@
 				numberOfSpheres++;
 			}
 			
-			setInterval(addRandomSphere, 50); //twenty spheres a second?
+			while (numberOfSpheres < TOTAL_NUM_SPHERES) {
+				addRandomSphere();
+			}
+			
+			//try exporting file
+			stlString += "endsolid";
+			var blob = new Blob([stlString], {type: 'text/plain'});
+			saveAs(blob, 'mesh.stl');
 		</script>
 	</body>
 </html>
