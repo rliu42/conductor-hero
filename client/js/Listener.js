@@ -23,6 +23,14 @@ $(function() {
         if (evt.keyCode == 17) {
             CtrlDown = true
         }
+        else if (evt.keyCode == 38) { //up key
+            increaseRadius();
+            console.log("Increasing Radius: " + currentRadius);
+        }
+        else if (evt.keyCode == 40) { //down key
+            decreaseRadius();
+            console.log("Decreasing Radius: " + currentRadius);
+        }
         if (CtrlDown && evt.keyCode == 90) {
             undo();
         } else if (CtrlDown && evt.keCcode == 89) {
@@ -192,6 +200,23 @@ const max_radius = 0.75;
         //isDrawing = event.data.split(' ')[1] == 1;
     }
 } */
+
+//hotkeys for +/- radius size
+function increaseRadius() {
+    if (currentRadius < max_radius) {
+        currentRadius+=0.05;
+        changeSphereSize(currentRadius);
+    }
+}
+
+function decreaseRadius() {
+    if (currentRadius > min_radius) {
+        currentRadius-=0.05;
+        changeSphereSize(currentRadius);
+    }
+}
+
+
 
 var penOff = function() {
     if (!drawingSphere && endpoints.length >= 2) {
