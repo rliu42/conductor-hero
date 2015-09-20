@@ -101,14 +101,14 @@
 					console.log("Marking beam permanently");
 					addSphere(posX, posY, posZ, SPHERERADIUS);
 					drawBeam(); //will error out at iterator == 0 but then initialize and keep going
-					startBeam(posX, posY, posZ);
+					startBeam([posX, posY, posZ]);
 				}
 				else {
 					posX = (Math.random() - 0.5)*5;
 					posY = (Math.random() - 0.5)*5;
 					posZ = (Math.random() - 0.5)*5;
 					console.log("Moving beam to (" + posX + "," + posY + "," + posZ + ")");
-					moveBeam(posX, posY, posZ);
+					moveBeam([posX, posY, posZ]);
 				}
 				iterator++;
 			}

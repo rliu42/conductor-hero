@@ -86,9 +86,9 @@ function addSphere(x,y,z,radius) {
 }
 
 // TO BE CALLED TO DRAW
-function movePointerSphere(x,y,z) {
+function movePointerSphere(position) {
 	if (pointerSphere != null) {
-		pointerSphere.position.set(x,y,z);
+		pointerSphere.position.set(position[0], position[1], position[2]);
 	}
 }
 
@@ -98,13 +98,12 @@ var currentBeamStart = {};
 var BEAM_MATERIAL = new THREE.MeshLambertMaterial({ color: 0xffffff })
 
 // TO BE CALLED TO DRAW
-function startBeam(x,y,z) {
+function startBeam(position) {
 	if (currentBeam != null) {
 		console.log("You already had a beam started!");
 	}
 	
-	currentBeamStart = new THREE.Vector3(x, y, z);
-	
+	currentBeamStart = new THREE.Vector3(position[0], position[1], position[2]);
 	var currentBeamGeometry = new THREE.CylinderGeometry(SPHERERADIUS, SPHERERADIUS, 0.01);
 	//currentBeamGeometry.translate(currentBeamStart.x, currentBeamStart.y, currentBeamStart.z);
 	currentBeam = new THREE.Mesh( currentBeamGeometry, POINTER_MATERIAL );
@@ -117,9 +116,9 @@ function startBeam(x,y,z) {
 }
 
 // TO BE CALLED TO DRAW
-function moveBeam(x,y,z) {
+function moveBeam(position) {
 	if (currentBeam != null) {
-		var currentBeamEnd = new THREE.Vector3(x,y,z);
+		var currentBeamEnd = new THREE.Vector3(position[0], position[1], position[2]);
 		var direction = new THREE.Vector3().subVectors( currentBeamEnd, currentBeamStart );
 		// Arrow method doesn't work! Using lookAt() instead!
     	//var arrow = new THREE.ArrowHelper( direction, currentBeamStart );
