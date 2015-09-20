@@ -224,7 +224,7 @@ var penOff = function() {
     }
     if (drawingSphere && endpoints.length >= 1) {
         console.log("Drawing sphere")
-        drawing.drawSphere({position: infer(endpoints[endpoints.length - 1], drawing.endpoints), radius: currentRadius*2});
+        drawing.drawSphere({position: infer(endpoints[endpoints.length - 1], drawing.endpoints), radius: currentRadius});
     }
     endpoints = [];
     drawingBeam = false;
