@@ -39,10 +39,50 @@
 				addRandomSphere();
 			}
 			
+			function movePointer() {
+				//CALL THESE FUNCTIONS
+				changeSphereSize(strokeSize);
+				movePointerSphere(posX,posY,posZ);
+				
+				//and this is how we update these values to be interesting
+				posX+=(Math.random()-0.5)*0.3;
+				posY+=(Math.random()-0.5)*0.3;
+				posZ+=(Math.random()-0.5)*0.3;
+				var strokeVariation = (Math.random()-0.5)*0.05;
+				if (strokeSize + strokeVariation > 0) {
+					strokeSize+=strokeVariation;
+				}
+			}
+			//setInterval(movePointer, 50); //moving our pointer around at 20 frames per second
+			
+			
 			//try exporting file
-			stlString += "endsolid";
-			var blob = new Blob([stlString], {type: 'text/plain'});
-			saveAs(blob, 'mesh.stl');
+			var saveSTLinProgress = false;
+			function saveStl() {
+				var stlString = "solid\n";
+				console.log(allSpheres);
+				for (i = 0; i < numberOfSpheres; i++) {
+					geometry = allSpheres[i];
+					console.log(geometry);
+					stlString += generateSTL( geometry );
+				}
+				stlString += "endsolid";
+				var blob = new Blob([stlString], {type: 'text/plain'});
+				saveAs(blob, 'mesh.stl');
+			}
+			
+			function onSaveKeyDown(e) {
+				console.log(e.keyCode);
+				// yes, we are designating key Z to be the save key here
+				if (!saveSTLinProgress && String.fromCharCode(e.keyCode) === 'Z') {
+					console.log("Save called");
+					saveSTLinProgress = true; //lolol our primitive lock
+					saveStl();
+					saveSTLinProgess = false;
+				}
+			}
+			
+			document.addEventListener("keydown", onSaveKeyDown, false);
 		</script>
 	</body>
 </html>

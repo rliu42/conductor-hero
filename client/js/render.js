@@ -1,10 +1,7 @@
 // THIS CAN BE USED TO RUN THE RENDERER
 
 //set our globals
-var scene, renderer, camera, controls, stats, numberOfSpheres, allSpheres, SPHERERADIUS, MATERIAL;
-
-//test the STL export
-var stlString = "solid pixel\n";
+var scene, renderer, camera, controls, stats, numberOfSpheres, allSpheres, pointerSphere, SPHERERADIUS, MATERIAL;
 
 //initialize all our stuff with constants and such
 function init() {
@@ -19,6 +16,11 @@ function init() {
 	allSpheres = []; // (stores all geometries)
 	SPHERERADIUS = 0.1; //default? If we end up storing this here.
 	MATERIAL = new THREE.MeshPhongMaterial();
+	
+	//and our pointer sphere
+	var pointerMaterial = new THREE.MeshPhongMaterial( { color: 0xff0000 } );
+	pointerSphere = new THREE.Mesh(new THREE.SphereGeometry(SPHERERADIUS), pointerMaterial);
+	scene.add( pointerSphere );
 
 	//lights!
 	var light = new THREE.PointLight( 0xffffff, 1, 100 );
@@ -65,21 +67,27 @@ function animate() {
 // TO BE CALLED TO DRAW
 function changeSphereSize(n) {
 	console.log("Changed sphere size from " + SPHERERADIUS + " to " + n);
-	SPHERERADIUS = n;	
+	if (pointerSphere != null) {
+		pointerSphere.scale.set(n/SPHERERADIUS, n/SPHERERADIUS, n/SPHERERADIUS);
+	}
+	SPHERERADIUS = n;
 }
 
 //TO BE CALLED TO DRAW
 function addSphere(x,y,z,radius) {
 	console.log("Adding a sphere to (" + x + "," + y + "," + z + ") with radius " + radius);
 	var sphereGeometry = new THREE.SphereGeometry( radius );
-	sphereGeometry.translate(x,y,z);
+	sphereGeometry.translate(x,y,z); //must set position through here
 	var sphere = new THREE.Mesh( sphereGeometry, MATERIAL );
-	//sphere.position.set(x,y,z);
+	allSpheres.push(sphereGeometry);
 	scene.add( sphere );
-	stlString+= generateSTL( sphereGeometry );
-	
-	// Do we need these here?
-	//render();
+}
+
+// TO BE CALLED TO DRAW
+function movePointerSphere(x,y,z) {
+	if (pointerSphere != null) {
+		pointerSphere.position.set(x,y,z);
+	}
 }
 
 //call our functions
