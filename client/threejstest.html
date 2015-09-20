@@ -18,9 +18,9 @@
 		<script>
 		
 			//initial values
-			var posX = 0;
-			var posY = 0;
-			var posZ = 0;
+			var posX = 1;
+			var posY = 1;
+			var posZ = 1;
 			var strokeSize = 0.1;
 			var TOTAL_NUM_SPHERES = 100;
 			
@@ -62,6 +62,7 @@
 			setInterval(movePointer, 50); //moving our pointer around at 20 frames per second
 			*/
 			
+			/*
 			//WATER MOLECULE DRAW
 			function variation(constant) {
 				return constant*(Math.random() - 0.5);
@@ -97,6 +98,39 @@
 			posY-=(1.0)/(numSteps+1);
 			strokeSize = BIG_STROKE;
 			addSphere(posX,posY,posZ,strokeSize+variation(0.1));
+			*/
+			
+			var iterator = 0;
+			function iterateBeamDraw() {
+				if (iterator % 10 == 0) {
+					console.log("Marking beam permanently");
+					addSphere(posX, posY, posZ, SPHERERADIUS);
+					drawBeam(); //will error out at iterator == 0 but then initialize and keep going
+					startBeam([posX, posY, posZ]);
+				}
+				else {
+					posX = (Math.random() - 0.5)*5;
+					posY = (Math.random() - 0.5)*5;
+					posZ = (Math.random() - 0.5)*5;
+					console.log("Moving beam to (" + posX + "," + posY + "," + posZ + ")");
+					moveBeam([posX, posY, posZ]);
+				}
+				iterator++;
+			}
+			setInterval(iterateBeamDraw, 50);
+			/*
+			for (i=0; i<20; i++) {
+				iterateBeamDraw();
+			}
+			*/
+			
+			/*
+			addSphere(0,0,0,SPHERERADIUS);
+			startBeam(0,0,0);
+			addSphere(2,2,2,SPHERERADIUS);
+			moveBeam(2,2,2);
+			drawBeam();
+			*/
 			
 >>>>>>> 38dee4447afe7d5c91717abf4c94731806f2c4a2
 			//try exporting file

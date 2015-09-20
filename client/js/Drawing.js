@@ -1,35 +1,36 @@
 var Drawing = function() {
     this.objects = []
+    this.endpoints = [];
 }
 
 Drawing.prototype.drawSphere = function(sphere) {
     this.objects.push(sphere);
-    mapPos = mapPosition(sphere.position)
-    //console.log(mapPos, sphere.radius)
-    addSphere(mapPos, sphere.radius);
+    addSphere(mapPosition(sphere.position), sphere.radius);
 }
 
 Drawing.prototype.drawRing = function(center, ringRadius, tubeRadius) {
 	var geometry = new THREE.TorusGeometry( ringRadius, tubeRadius, 16, 100 );
-	var material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+	var material = new THREE.MeshPhongMaterial( { color: 0xffffff } );
 	var torus = new THREE.Mesh( geometry, material );
 	center = mapPosition(center)
 	torus.position.set(center[0], center[1], center[2]);
 	scene.add( torus );
 }
 
-Drawing.prototype.beginBeam = function(center, radius) {
-    return;
+Drawing.prototype.startBeam = function(center, radius) {
+    this.endpoints.push(center);
+    startBeam(mapPosition(center))
 }
 
-Drawing.prototype.endBeam = function(center, radius) {
-    return;
+Drawing.prototype.moveBeam = function(center, radius) {
+    moveBeam(mapPosition(center))
 }
 
 Drawing.prototype.drawBeam = function(start, end, radius) {
-    //console.log(startSphere, endSphere)
-    this.drawSphere(startSphere);
-    this.drawSphere(endSphere);
+    //addSphere(start);
+    //addSphere(end);
+    this.endpoints.push(end)
+    drawBeam();
 }
 
 var scale = {
@@ -39,7 +40,7 @@ var scale = {
 }
 var translate = {
     x: -2,
-    y: -4,
+    y: -5,
     z: 0
 }
 

@@ -15,25 +15,26 @@ function init() {
     numberOfSpheres = 0;
     allSpheres = []; // (stores all geometries)
     SPHERERADIUS = 0.1; //default? If we end up storing this here.
-    MATERIAL = new THREE.MeshPhongMaterial();
+    MATERIAL = new THREE.MeshPhongMaterial({
+        color: 0xffffff
+    });
 
     //and our pointer sphere
-    var pointerMaterial = new THREE.MeshPhongMaterial({
-        color: 0xffffff,
-        opacity: 0.5,
-        transparency: true
+    POINTER_MATERIAL = new THREE.MeshPhongMaterial({
+        color: 0xff0000
     });
-    pointerSphere = new THREE.Mesh(new THREE.SphereGeometry(SPHERERADIUS), pointerMaterial);
+    pointerSphere = new THREE.Mesh(new THREE.SphereGeometry(SPHERERADIUS), POINTER_MATERIAL);
     scene.add(pointerSphere);
 
     //lights!
     var light = new THREE.PointLight(0xffffff, 1, 100);
     light.position.set(10, 0, 10);
-    scene.add(light);
 
     //camera!
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 5;
+    camera.add(light);
+    scene.add(camera)
 
     //action! (actually, just the dragging thing)
     controls = new THREE.TrackballControls(camera);
@@ -114,6 +115,77 @@ function pointerOff(position, radius) {
         scene.add(pointerSphere);
     } catch (e) {
 
+    }
+}
+
+//BEAMS
+var currentBeam = null;
+var currentBeamStart = {};
+var BEAM_MATERIAL = new THREE.MeshLambertMaterial({
+    color: 0xffffff
+})
+
+// TO BE CALLED TO DRAW
+function startBeam(position) {
+    if (currentBeam != null) {
+        //console.log("You already had a beam started!");
+    }
+
+    currentBeamStart = new THREE.Vector3(position[0], position[1], position[2]);
+    var currentBeamGeometry = new THREE.CylinderGeometry(SPHERERADIUS, SPHERERADIUS, 0.01);
+    //currentBeamGeometry.translate(currentBeamStart.x, currentBeamStart.y, currentBeamStart.z);
+    currentBeam = new THREE.Mesh(currentBeamGeometry, BEAM_MATERIAL);
+    //for some reason the following line doesn't work when the documentation says it should...
+    //currentBeam.position = currentBeamStart;
+    //so we use this instead...
+    currentBeam.position.set(currentBeamStart.x, currentBeamStart.y, currentBeamStart.z);
+    scene.add(currentBeam);
+    //console.log("Started current beam at (" + currentBeam.position.x + "," + currentBeam.position.y + "," + currentBeam.position.z + ")");
+}
+
+// TO BE CALLED TO DRAW
+function moveBeam(position) {
+    if (currentBeam != null) {
+        var currentBeamEnd = new THREE.Vector3(position[0], position[1], position[2]);
+        var direction = new THREE.Vector3().subVectors(currentBeamEnd, currentBeamStart);
+        // Arrow method doesn't work! Using lookAt() instead!
+        // var arrow = new THREE.ArrowHelper( direction, currentBeamStart );
+        // console.log("Direction: " + direction.length());
+        var currentBeamGeometry = new THREE.CylinderGeometry(SPHERERADIUS, SPHERERADIUS, direction.length());
+        currentBeamGeometry.rotateX(Math.PI / 2) //I don't know why this works!!!!! (I think lookat fixes a lateral side?)
+        scene.remove(currentBeam);
+        currentBeam = new THREE.Mesh(currentBeamGeometry, BEAM_MATERIAL);
+        //currentBeam.rotation.set(arrow.rotation.x, arrow.rotation.y, arrow.rotation.z);
+        /*
+        console.log(arrow.rotation);
+        console.log(currentBeam.rotation);
+        console.log(currentBeam.rotation.x);
+        console.log(currentBeam.rotation.y);
+        console.log(currentBeam.rotation.z);
+        */
+        //scene.add(currentBeam);
+        //center is halfway there between start and end
+        var centerVector = new THREE.Vector3().addVectors(currentBeamStart, direction.multiplyScalar(0.5));
+        currentBeam.position.set(centerVector.x, centerVector.y, centerVector.z);
+
+        currentBeam.lookAt(currentBeamEnd);
+        scene.add(currentBeam);
+        //console.log("Moving beam to (" + currentBeam.position.x + "," + currentBeam.position.y + "," + currentBeam.position.z + ")");
+    } else {
+        //console.log("You had no beam started!");
+    }
+}
+
+// TO BE CALLED TO DRAW
+function drawBeam() {
+    if (currentBeam != null) {
+        currentBeam.material = MATERIAL;
+        allSpheres.push(currentBeam);
+        //scene.add(currentBeam);
+        numberOfSpheres++;
+        currentBeam = null;
+    } else {
+        console.log("You had no beam started!");
     }
 }
 

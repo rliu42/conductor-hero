@@ -13,3 +13,13 @@ function diff(p1, p2) {
 function mult(p, scalar) {
     return [p[0] * scalar, p[1] * scalar, p[2] * scalar]
 }
+
+function infer(p, points) {
+	var threshold = 40;
+	for (i in points) {
+		if (distance(points[i], p) > 1 && distance(points[i], p) < threshold) {
+			return points[i]
+		}
+	}
+	return p;
+}
