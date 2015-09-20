@@ -1,7 +1,7 @@
 // THIS CAN BE USED TO RUN THE RENDERER
 
 //set our globals
-var scene, renderer, camera, controls, stats, numberOfSpheres, allSpheres, pointerSphere, POINTER_MATERIAL, SPHERERADIUS, MATERIAL;
+var scene, renderer, camera, controls, stats, numberOfSpheres, allSpheres, undoStack, redoStack, validRedo, pointerSphere, POINTER_MATERIAL, SPHERERADIUS, MATERIAL;
 
 //initialize all our stuff with constants and such
 function init() {
@@ -14,6 +14,9 @@ function init() {
 	//set our constants for sphere, etc. (globals)
 	numberOfSpheres = 0;
 	allSpheres = []; // (stores all geometries)
+	undoStack = []; // stores undo meshes
+	redoStack = []; // stores redo meshes
+	validRedo = false; // switch to keep track of whether there are valid redos in stack
 	SPHERERADIUS = 0.1; //default? If we end up storing this here.
 	MATERIAL = new THREE.MeshPhongMaterial( { color: 0xffffff } );
 	
@@ -82,7 +85,12 @@ function addSphere(x,y,z,radius) {
 	var sphere = new THREE.Mesh( sphereGeometry, MATERIAL );
 	allSpheres.push(sphereGeometry);
 	scene.add( sphere );
+	undoStack.push( sphere );
 	numberOfSpheres++;
+	if (validRedo) {
+		validRedo = false;
+		redoStack = [];
+	}
 }
 
 // TO BE CALLED TO DRAW
@@ -170,6 +178,28 @@ function drawBeam() {
 	}
 }
 
+// TO BE CALLED TO UNDO 
+function undo() {
+	if (undoStack.length != 0) {
+		console.log("undo!");
+		undone = undoStack.pop();
+		allSpheres.pop();
+		scene.remove( undone );
+		redoStack.push( undone );
+		validRedo = true;
+	}
+}
+
+// TO BE CALLED TO REDO
+function redo() {
+	if (validRedo && redoStack.length != 0) {
+		console.log("redo!");
+		redone = redoStack.pop();
+		allSpheres.push( redone.geometry );
+		scene.add( redone );
+		undoStack.push( redone );
+	}
+}
 //call our functions
 init();
 animate();
