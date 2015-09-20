@@ -170,6 +170,11 @@ function drawBeam() {
 		geometry.translate(currentBeam.position.x, currentBeam.position.y, currentBeam.position.z);
 		
 		allSpheres.push(geometry);
+		undoStack.push(currentBeam);
+		if (validRedo) {
+			validRedo = false;
+			redoStack = [];
+		}
 		numberOfSpheres++;
 		currentBeam = null;
 	}
@@ -187,6 +192,7 @@ function undo() {
 		scene.remove( undone );
 		redoStack.push( undone );
 		validRedo = true;
+		numberOfSpheres--;
 	}
 }
 
@@ -198,6 +204,7 @@ function redo() {
 		allSpheres.push( redone.geometry );
 		scene.add( redone );
 		undoStack.push( redone );
+		numberOfSpheres++;
 	}
 }
 //call our functions

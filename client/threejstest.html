@@ -32,14 +32,12 @@
 				if (strokeSize + strokeVariation > 0) {
 					strokeSize+=strokeVariation;
 				}
-				numberOfSpheres++;
+				//numberOfSpheres++;
 			}
 			
 /*			while (numberOfSpheres < TOTAL_NUM_SPHERES) {
 				addRandomSphere();
 			}
-
-			undo();
 
 			var undos = numberOfSpheres;
 			while (undos > 0) {
@@ -58,7 +56,7 @@
 				undos++;
 			}
 			console.log("Testing invalid redo!");
-			redo();*/
+			redo();
 
 /*			function movePointer() {
 				//CALL THESE FUNCTIONS
@@ -115,7 +113,17 @@
 			addSphere(posX,posY,posZ,strokeSize+variation(0.1));
 			*/
 			
-
+/*			for (i = 0; i < 5; i++) {
+				startBeam([posX, posY, posZ]);
+				posX = (Math.random() - 0.5)*5;
+				posY = (Math.random() - 0.5)*5;
+				posZ = (Math.random() - 0.5)*5;	
+				moveBeam([posX, posY, posZ]);
+				drawBeam();
+			}
+			
+			undo();*/
+			
 			var iterator = 0;
 			function iterateBeamDraw() {
 				if (iterator % 10 == 0) {
@@ -160,7 +168,8 @@
 			var saveSTLinProgress = false;
 			function saveStl() {
 				var stlString = "solid\n";
-				for (i = 0; i < numberOfSpheres; i++) {
+				console.log(allSpheres);
+				for (i = 0; i < allSpheres.length; i++) {
 					geometry = allSpheres[i];
 					console.log(geometry);
 					stlString += generateSTL( geometry );
