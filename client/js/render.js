@@ -65,11 +65,11 @@ function changeSphereSize(n) {
 }
 
 //TO BE CALLED TO DRAW
-function addSphere(x,y,z,radius) {
-	console.log("Adding a sphere to (" + x + "," + y + "," + z + ") with radius " + radius);
+function addSphere(position, radius) {
+	// console.log("Adding a sphere to (" + x + "," + y + "," + z + ") with radius " + radius);
 	var sphereGeometry = new THREE.SphereGeometry( radius );
 	var sphere = new THREE.Mesh( sphereGeometry, MATERIAL );
-	sphere.position.set(x,y,z);
+	sphere.position.set(position[0], position[1], position[2]);
 	scene.add( sphere );
 	
 	// Do we need these here?

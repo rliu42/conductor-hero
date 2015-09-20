@@ -15,13 +15,15 @@ from Drawing import Drawing, Sphere
 low_pot = 33
 high_pot = 867
 low_radius = 0.1
-high_radius = 2.0
+high_radius = 1.0
 
 class Listener(Leap.Listener):
 
     def on_connect(self, controller):
         print "Connected"
         self.drawing = Drawing()
+        self.prev_pot = 400
+        self.prev_button = 1
         # controller.enable_gesture(Leap.Gesture.TYPE_SWIPE);
 
     def on_frame(self, controller):
@@ -31,19 +33,21 @@ class Listener(Leap.Listener):
           #frame.id, frame.timestamp, len(frame.hands), len(frame.fingers), len(frame.tools), len(frame.gestures()))
         if len(frame.tools) > 0:
             pen = frame.tools[0]
-            ## radius 33 - 867
             reading = ser.readline()
-            # print reading
+            #print reading
             try:
                 pot = int(reading.split(' ')[0])
                 button = int(reading.split(' ')[1][0])
+                self.prev_pot = pot
+                self.prev_button = button
                 #print (pot, button)
             except:
-                pot = 400
-                button = 1
+                pot = self.prev_pot
+                button = self.prev_button
+                print 'Invalid reading'
             radius = float(pot-low_pot)/(high_pot-low_pot)*(high_radius-low_radius) + low_radius
-            if button == 1:
-                print (pen.tip_position, radius)
+            if True:
+                print ('position: ' + str(pen.tip_position), 'radius: ' + str(radius))
                 self.drawing.add_sphere(Sphere(pen.tip_position, radius))
 
 
