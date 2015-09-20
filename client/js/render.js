@@ -1,7 +1,10 @@
 // THIS CAN BE USED TO RUN THE RENDERER
 
 //set our globals
-var scene, renderer, camera, controls, stats, numberOfSpheres, SPHERERADIUS, MATERIAL;
+var scene, renderer, camera, controls, stats, numberOfSpheres, allSpheres, SPHERERADIUS, MATERIAL;
+
+//test the STL export
+var stlString = "solid pixel\n";
 
 //initialize all our stuff with constants and such
 function init() {
@@ -13,6 +16,7 @@ function init() {
 
 	//set our constants for sphere, etc. (globals)
 	numberOfSpheres = 0;
+	allSpheres = []; // (stores all geometries)
 	SPHERERADIUS = 0.1; //default? If we end up storing this here.
 	MATERIAL = new THREE.MeshPhongMaterial();
 
@@ -68,9 +72,11 @@ function changeSphereSize(n) {
 function addSphere(position, radius) {
 	// console.log("Adding a sphere to (" + x + "," + y + "," + z + ") with radius " + radius);
 	var sphereGeometry = new THREE.SphereGeometry( radius );
+	sphereGeometry.translate(position[0], position[1], position[2]);
 	var sphere = new THREE.Mesh( sphereGeometry, MATERIAL );
 	sphere.position.set(position[0], position[1], position[2]);
 	scene.add( sphere );
+	stlString+= generateSTL( sphereGeometry );
 	
 	// Do we need these here?
 	//render();
