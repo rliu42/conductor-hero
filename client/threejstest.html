@@ -112,12 +112,12 @@
 				}
 				iterator++;
 			}
-			setInterval(iterateBeamDraw, 50);
-			/*
-			for (i=0; i<20; i++) {
+			//setInterval(iterateBeamDraw, 50);
+			
+			for (i=0; i<501; i++) {
 				iterateBeamDraw();
 			}
-			*/
+			
 			
 			/*
 			addSphere(0,0,0,SPHERERADIUS);
@@ -133,6 +133,7 @@
 				var stlString = "solid\n";
 				for (i = 0; i < numberOfSpheres; i++) {
 					geometry = allSpheres[i];
+					console.log(geometry);
 					stlString += generateSTL( geometry );
 				}
 				stlString += "endsolid";
