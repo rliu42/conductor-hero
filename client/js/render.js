@@ -25,11 +25,12 @@ function init() {
 	//lights!
 	var light = new THREE.PointLight( 0xffffff, 1, 100 );
 	light.position.set( 10, 0, 10 );
-	scene.add( light );
 
 	//camera!
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
 	camera.position.z = 5;
+	camera.add( light );
+	scene.add( camera )
 
 	//action! (actually, just the dragging thing)
 	controls = new THREE.TrackballControls( camera );
